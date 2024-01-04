@@ -1,7 +1,24 @@
+using Econference.Data;
+using Econference.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Database context
+// Add Database context
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+/*
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+*/
+
 // Add services to the container.
+builder.Services.AddMvc();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<PasswordHasher<ApplicationUser>>();
 
 var app = builder.Build();
 
