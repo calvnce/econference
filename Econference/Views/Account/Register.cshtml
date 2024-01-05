@@ -1,46 +1,55 @@
-﻿@model Econference.ViewModels.RegisterViewModel
+﻿@{
+    Layout = "_AccountLayout";
+}
+
+@model Econference.ViewModels.RegisterViewModel
 
 @{
     ViewData["Title"] = "User Register";
 }
 
-<section id="reg-form" class="container-md">
-    <div class="card">
-        <div class="row">
-            <form asp-action="Register" method="post" class="form">
-                <div class="mb-3">
-                    <label for="fullName" class="form-label">Full name</label>
-                    <input asp-for="FullName" class="form-control" aria-describedby="fullNameHelp">
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                    <div id="emailHelp" class="form-text">Provide your first and last names separated by space.</div>
+<section id="login-form" class="container p-3">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center p-2 text-secondary">Register</h5>
+                    <form asp-action="Register" method="post" class="form">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full name</label>
+                            <input asp-for="FullName" class="form-control" aria-describedby="fullNameHelp">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                            <div id="emailHelp" class="form-text">Provide your first and last names separated by space.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userRole" class="form-label">User Role</label>
+                            <select asp-for="UserRole" class="form-select" aria-label="Select user role">
+                                <option value="USER">User</option>
+                                <option value="ADMIN">Admin</option>
+                            </select>
+                            <span asp-validation-for="UserRole" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input asp-for="Email" class="form-control" type="email" aria-describedby="emailHelp">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <div id="emailHelp" class="form-text">Valid email address required.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userName" class="form-label">Username</label>
+                            <input asp-for="Username" class="form-control" aria-describedby="userNameHelp">
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                            <div id="userNameHelp" class="form-text">Username is expected to be unique.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="userRole" class="form-label">User Role</label>
-                    <select asp-for="UserRole" class="form-select" aria-label="Select user role">
-                        <option value="USER">User</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-                    <span asp-validation-for="UserRole" class="text-danger"></span>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
-                    <input asp-for="Email" class="form-control" type="email" aria-describedby="emailHelp">
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                    <div id="emailHelp" class="form-text">Valid email address required.</div>
-                </div>
-                <div class="mb-3">
-                    <label for="userName" class="form-label">Username</label>
-                    <input asp-for="Username" class="form-control" aria-describedby="userNameHelp">
-                    <span asp-validation-for="Username" class="text-danger"></span>
-                    <div id="userNameHelp" class="form-text">Username is expected to be unique.</div>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input asp-for="Password" class="form-control" type="password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
+            </div>
         </div>
     </div>
 </section>
