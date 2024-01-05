@@ -14,14 +14,13 @@ namespace Econference.Controllers
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
 
-        [HttpGet("account/register")]
         public IActionResult Register()
         {
             return View();
         }
 
 
-        [HttpPost("account/register")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -29,12 +28,45 @@ namespace Econference.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // TODO: Hash the password
-                    // TODO: Save data to the database
-                    // TODO: Redirect user to the login page ("/user/account/login")
+                    var user = new ApplicationUser
+                    {
+                        FullName = model.FullName,
+                        Email = model.Email,
+                        UserName = model.Username,
+                        UserRole = model.UserRole,
+                    };
 
-                    return RedirectToAction(nameof(Index));
+                    var result = await _userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        // Assign the user to a role
+                        var roleResult = await _userManager.AddToRoleAsync(user, model.UserRole);
+
+                        if (roleResult.Succeeded)
+                        {
+                            // Automatically sign in the user after registration
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+
+                            // Redirect to a secure page after successful registration
+                            ViewData["user"] = new ApplicationUser
+                            {
+                                Id = user.Id,
+                                UserName = user.UserName,
+                                FullName = user.FullName,
+                                Email = user.Email
+                            };
+                            
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    Debug.WriteLine(result.Errors);
                 }
+                // Registration failed! redisplay the registration page
                 return View(model);
             }
             catch (Exception ex)
@@ -45,13 +77,12 @@ namespace Econference.Controllers
             }
         }
 
-        [HttpGet("account/login")]
         public IActionResult LogIn()
         {
             return View();
         }
 
-        [HttpPost("account/login")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogIn(LogInViewModel model)
         {
@@ -62,14 +93,23 @@ namespace Econference.Controllers
                     var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
                     if (result.Succeeded)
                     {
-                        var user =  await _signInManager.UserManager.FindByNameAsync(model.Username);
+                        var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
                         if (user != null)
                         {
-                            return RedirectToAction("Index", "Home", user);
+                            // Pass the necessary data to the view
+                            ViewData["user"] = new ApplicationUser {
+                                Id = user.Id, 
+                                UserName=user.UserName,
+                                FullName=user.FullName,
+                                Email=user.Email
+                            };
+
+                            return RedirectToAction("Index", "Home");
                         }
                         ModelState.AddModelError("UserError", "Something happened! Try again.");
                     }
-                    ModelState.AddModelError("UsernamePassowrdError", "Username or Password is incorrect");
+                    Debug.WriteLine(result);
+                    ModelState.AddModelError("UsernamePasswordError", "Username or Password is incorrect");
                 }
                 return View(model);
             }

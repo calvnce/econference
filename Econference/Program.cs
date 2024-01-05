@@ -26,7 +26,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 builder.Services.AddScoped<PasswordHasher<ApplicationUser>>();
 builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
-
+builder.Services.AddScoped<RoleManager<IdentityRole>>();
 
 var app = builder.Build();
 
@@ -38,6 +38,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Resolve the RoleManager service
+using var serviceScope = app.Services.CreateScope();
+var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+// Seed roles
+SeedRoles(roleManager).Wait();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -47,7 +54,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=LogIn}");
+    pattern: "{controller=Account}/{action=LogIn}/{id?}"); // Correct default route
+
 
 app.MapControllerRoute(
     name: "home",
@@ -55,3 +63,17 @@ app.MapControllerRoute(
 
 
 app.Run();
+
+static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+{
+    // Add roles if they don't exist
+    if (!await roleManager.RoleExistsAsync("USER"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("USER"));
+    }
+
+    if (!await roleManager.RoleExistsAsync("ADMIN"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("ADMIN"));
+    }
+}
