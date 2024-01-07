@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "User Account";
 }
 
 @{
@@ -8,7 +8,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome, @user.UserName</h1>
-    <p>Full Name: @user</p>
-    <p>Email: @user</p>
+    <p>Full Name: @user.FullName</p>
+    <p>Email: @user.Email</p>
     <!-- Display other user data -->
 </div>

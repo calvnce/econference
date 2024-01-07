@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Econference.Controllers
@@ -49,15 +50,18 @@ namespace Econference.Controllers
                             await _signInManager.SignInAsync(user, isPersistent: false);
 
                             // Redirect to a secure page after successful registration
-                            ViewData["user"] = new ApplicationUser
+                            var usr = new ApplicationUser
                             {
                                 Id = user.Id,
                                 UserName = user.UserName,
                                 FullName = user.FullName,
                                 Email = user.Email
                             };
-                            
-                            return RedirectToAction("Index", "Home");
+
+                            var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
+                            HttpContext.Session.SetString("user", userJson);
+
+                            return RedirectToAction("Index", "User");
                         }
                     }
                     foreach (var error in result.Errors)
@@ -97,14 +101,17 @@ namespace Econference.Controllers
                         if (user != null)
                         {
                             // Pass the necessary data to the view
-                            ViewData["user"] = new ApplicationUser {
+                            var usr = new ApplicationUser {
                                 Id = user.Id, 
                                 UserName=user.UserName,
                                 FullName=user.FullName,
                                 Email=user.Email
                             };
 
-                            return RedirectToAction("Index", "Home");
+                            var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
+                            HttpContext.Session.SetString("user", userJson);
+
+                            return RedirectToAction("Index", "User");
                         }
                         ModelState.AddModelError("UserError", "Something happened! Try again.");
                     }

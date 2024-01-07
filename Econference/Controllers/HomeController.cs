@@ -1,13 +1,15 @@
 using Econference.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace Econference.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -15,6 +17,10 @@ namespace Econference.Controllers
 
         public IActionResult Index()
         {
+            var userJson = HttpContext.Session.GetString("user");
+            var user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+            ViewData["user"] = user;
+
             return View();
         }
 
