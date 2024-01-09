@@ -23,7 +23,7 @@ namespace Econference.Controllers
             ViewData["user"] = user;
             return View();
         }
-
+        
         // GET: UserController/Details/5
         public ActionResult Details(int id)
         {
