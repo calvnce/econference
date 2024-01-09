@@ -10,5 +10,9 @@ namespace Econference.Data
             :base(dbContextOptions) 
         { }
 
+        public DbSet<Conference> Conferences { get; set; }
+        public DbSet<Hall> Halls { get; set; }
+        public DbSet<CateringProvider> Caterings { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
     }
 }
