@@ -13,8 +13,6 @@
 
 
 <section class="container-fluid">
-    <h2>Your Conferences</h2>
-    <hr />
     <a asp-action="RegisterConference" asp-controller="User" asp-route-userId="@user.Id" class="btn btn-outline-success mb-1">New</a>
     @if (Model != null && Model.Any())
     {
@@ -22,7 +20,7 @@
             @foreach (var conference in Model)
             {
                 <div class="col-md-4">
-                    <div class="card mb-4">
+                    <div class="card card-deck mb-4">
                         <div class="card-body">
                             <h5 class="card-title">@conference.Title</h5>
                             <hr/>
@@ -49,13 +47,13 @@
                                 <p class="card-text">@conference.Hall.BuildingName, @conference.Hall.BuildingFloor room number @conference.Hall.RoomNumber </p>
                             }
                             <hr/>
-                            <div class="d-flex flex-md-wrap justify-content-around">
+                            <div class="d-flex">
                                 @if (conference.Status.Equals("Pending"))
                                 {
-                                    <a asp-action="BookConferenceSpace" asp-controller="User" asp-route-id="@conference.Id" class="link-primary text-decoration-none">Request Space</a>
+                                    <a asp-action="BookConferenceSpace" asp-controller="User" asp-route-id="@conference.Id" class="link-primary p-2">Request Space</a>
                                 }
-                                <a asp-action="UpdateConference" asp-controller="User" asp-route-id="@conference.Id" class="link-warning text-decoration-none">Update</a>
-                                <a asp-action="DeleteConference" asp-controller="User" asp-route-id="@conference.Id" class="link-danger text-decoration-none">Delete</a>
+                                <a asp-action="UpdateConference" asp-controller="User" asp-route-id="@conference.Id" class="link-warning p-2">Update</a>
+                                <a asp-action="DeleteConference" asp-controller="User" asp-route-id="@conference.Id" class="link-danger p-2">Delete</a>
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Add Conference Hall";
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
+}
+@model Econference.ViewModels.HallViewModel;
+
+<section class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center p-2 text-secondary">Add New Conference Hall</h5>
+                <form asp-action="AddConferenceHall" method="post" class="form">
+                    <div class="mb-3">
+                        <label for="roomNumber" class="form-label">Room number</label>
+                        <input asp-for="RoomNumber" class="form-control">
+                        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="desc" class="form-label">Building name</label>
+                        <input asp-for="BuildingName" class="form-control">
+                        <span asp-validation-for="BuildingName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="floor" class="form-label">Floor</label>
+                       <select id="floor" asp-for="BuildingFloor">
+                           <option value="Ground Floor">Ground Floor</option>
+                            <option value="First Floor">First Floor</option>
+                            <option value="Second Floor">Second Floor</option>
+                            <option value="Third Floor">Third Floor</option>
+                            <option value="Fourth Floor">Fourth Floor</option>
+                       </select>
+                        <span asp-validation-for="BuildingFloor" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacity" class="form-label">Capacity</label>
+                        <input type="number" asp-for="Capacity" class="form-control">
+                        <span asp-validation-for="Capacity" class="text-danger"></span>
+                    </div>
+
+                    <!-- Display model-level errors -->
+                    <div class="validation-summary-errors text-danger">
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

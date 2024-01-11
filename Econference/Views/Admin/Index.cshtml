@@ -1,14 +1,25 @@
 ﻿@{
     ViewData["Title"] = "User Account";
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
 }
 
-@{
-    var user = ViewData["user"] as ApplicationUser;
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome, @user.UserName</h1>
-    <p>Full Name: @user.FullName</p>
-    <p>Email: @user.Email</p>
-    <!-- Display other user data -->
-</div>
+<section class="container-fluid">
+    Admin Area
+    <br />
+    --------------
+    <br />
+    Username: @user.UserName
+    -------------------------
+    <br />
+    Email: @user.Email
+    -------------------------
+    <br />
+    Role: @user.UserRole
+    -------------------------
+    <br />
+</section>

@@ -1,12 +1,25 @@
 ﻿@{
     ViewData["Title"] = "User Account";
-}
-
-@{
-    var user = ViewData["user"] as ApplicationUser;
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
 }
 
 <section class="container-fluid">
     User Area
-
+    <br />
+    --------------
+    <br />
+    Username: @user.UserName
+    -------------------------
+    <br />
+    Email: @user.Email
+    -------------------------
+    <br />
+    Role: @user.UserRole
+    -------------------------
+    <br />
 </section>

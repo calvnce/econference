@@ -60,8 +60,12 @@ namespace Econference.Controllers
 
                             var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
                             HttpContext.Session.SetString("user", userJson);
+                            if (user.UserRole.Equals("USER"))
+                            {
+                                return RedirectToAction("Index", "User");
+                            }
+                            return RedirectToAction("Index", "Admin");
 
-                            return RedirectToAction("Index", "User");
                         }
                     }
                     foreach (var error in result.Errors)
@@ -111,7 +115,11 @@ namespace Econference.Controllers
                             var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
                             HttpContext.Session.SetString("user", userJson);
 
-                            return RedirectToAction("Index", "User");
+                            if (user.UserRole.Equals("USER"))
+                            {
+                                return RedirectToAction("Index", "User");
+                            }
+                            return RedirectToAction("Index", "Admin");
                         }
                         ModelState.AddModelError("UserError", "Something happened! Try again.");
                     }

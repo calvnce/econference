@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Conference Halls";
+
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
+}
+
+@model IEnumerable<Econference.Models.Hall>
+
+
+<section class="container-fluid">
+    <a asp-action="AddConferenceHall" asp-controller="Admin" class="btn btn-outline-success mb-1">Add</a>
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>#Id</th>
+                        <th>Room</th>
+                        <th>Floor</th>
+                        <th>Building</th>
+                        <th>Capacity</th>
+                        <th>Status</th>
+                    </tr>
+                </tbody>
+                <tbody>
+                    @foreach (var hall in Model)
+                    {
+                        <tr>
+                            <td>@hall.Id</td>
+                            <td>@hall.RoomNumber</td>
+                            <td>@hall.BuildingFloor</td>
+                            <td>@hall.BuildingName</td>
+                            <td>@hall.Capacity</td>
+                            <td>@hall.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>No Halls found.</p>
+    }
+
+</section>
