@@ -14,7 +14,7 @@ namespace Econference.Models
         public int ConferenceId { get; set; }
         
         [ForeignKey(nameof(CateringProviderId))]
-        public int CateringProviderId {  get; set; }
+        public int? CateringProviderId {  get; set; }
         
         [Required]
         public string Status { get; set;}

@@ -8,8 +8,9 @@ namespace Econference.Models
     {
         [Key]
         public int Id { get; set; }
+       
         [ForeignKey(nameof(HallId))]
-        public int HallId { get; set; }
+        public int? HallId { get; set; }
         [Required]
         [ForeignKey(nameof(UserId))]
         public string UserId { get; set; }
@@ -24,11 +25,13 @@ namespace Econference.Models
         [Required]
         public DateOnly StartDate { get; set; }
         [Required]
-        public TimeOnly StarTime { get; set; }
+        public TimeOnly StartTime { get; set; }
         [Required]
         public DateOnly EndDate { get; set;}
         [Required]
         public TimeOnly EndTime { get; set; }
+        [Required]
+        public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public virtual Hall Hall { get; set; }
         public virtual ApplicationUser User { get; set; }

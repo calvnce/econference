@@ -106,7 +106,7 @@ namespace Econference.Migrations
                     b.Property<DateTime>("BookedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CateringProviderId")
+                    b.Property<int?>("CateringProviderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ConferenceId")
@@ -174,17 +174,21 @@ namespace Econference.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HallId")
+                    b.Property<int?>("HallId")
                         .HasColumnType("int");
 
                     b.Property<int>("ParticipantCount")
                         .HasColumnType("int");
 
-                    b.Property<TimeOnly>("StarTime")
-                        .HasColumnType("time");
-
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
+
+                    b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -376,9 +380,7 @@ namespace Econference.Migrations
                 {
                     b.HasOne("Econference.Models.CateringProvider", "Cater")
                         .WithMany()
-                        .HasForeignKey("CateringProviderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CateringProviderId");
 
                     b.HasOne("Econference.Models.Conference", "Conference")
                         .WithMany("Bookings")
@@ -395,9 +397,7 @@ namespace Econference.Migrations
                 {
                     b.HasOne("Econference.Models.Hall", "Hall")
                         .WithMany("Conferences")
-                        .HasForeignKey("HallId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HallId");
 
                     b.HasOne("Econference.Models.ApplicationUser", "User")
                         .WithMany()

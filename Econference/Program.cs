@@ -37,6 +37,8 @@ builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 builder.Services.AddScoped<RoleManager<IdentityRole>>();
 
+builder.Services.AddScoped<IConferenceRepository,ConferenceRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

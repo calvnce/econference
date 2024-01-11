@@ -1,4 +1,5 @@
 ﻿using Econference.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Econference.Data
 {
@@ -14,6 +15,7 @@ namespace Econference.Data
         {
             try
             {
+                _context.Conferences.Add(conference);
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -23,24 +25,61 @@ namespace Econference.Data
             }
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+               var conference =  await _context.Conferences.FindAsync(id);
+                if (conference != null)
+                {
+                    _context.Conferences.Remove(conference);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task<List<Conference>> GetAllAsync()
+        public async Task<List<Conference>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Conferences.ToListAsync();
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task<Conference> GetAsync(int id)
+        public async Task<Conference> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await (_context.Conferences.FindAsync(id));
+            }
+            catch (Exception e)
+            {
+
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task UpdateAsync(Conference conference)
+        public async Task UpdateAsync(Conference conference)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Conferences.Update(conference);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

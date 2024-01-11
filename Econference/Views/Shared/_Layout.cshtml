@@ -1,9 +1,20 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Econference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Econference.styles.css" asp-append-version="true" />
@@ -28,13 +39,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-action="Index">
+                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-route-userId="@ViewData["UserId"]"  asp-action="RegisterConference">
                                         Register Confrence
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-action="Index">
+                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-route-userId="@user.Id" asp-action="ListConference">
                                         Request (Book) Conference Space
                                     </a>
                                 </li>
@@ -42,7 +53,7 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                @ViewData["FullName"]
+                                @user.FullName
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -70,6 +81,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

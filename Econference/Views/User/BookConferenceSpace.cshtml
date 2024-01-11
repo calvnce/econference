@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Book Conference Space";
+}
+@{
+    var conference = TempData["conference"] as Conference;
+}
+@model Econference.ViewModels.ConferenceBookingViewModel;
+
+<section class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center p-2 text-secondary">Book Conference Space</h5>
+                <form asp-action="BookConferenceSpace" method="post" class="form">
+                    <input asp-for="ConferenceId" type="hidden" value="@conference.Id" />
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Conference Title</label>
+                        <input type="text" class="form-control text-muted" value="@conference.Title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Conference Title</label>
+                        <input type="text" class="form-control text-muted" value="@conference.Title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="desc" class="form-label">Requested Equipment</label>
+                        <textarea class="form-control text-muted">@Html.Raw(conference.Equipment.Replace("\n", "<br />")) </textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userRole" class="form-label">Include Catering Services</label>
+                        <select asp-for="IsCateringRequired" class="form-select" aria-label="Select option">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <span asp-validation-for="IsCateringRequired" class="text-danger"></span>
+                    </div>
+                    <!-- Display model-level errors -->
+                    <div class="validation-summary-errors text-danger">
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
