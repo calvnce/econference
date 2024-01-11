@@ -3,6 +3,7 @@
 }
 @{
     var conference = TempData["conference"] as Conference;
+    TempData.Keep("conference");
 }
 @model Econference.ViewModels.ConferenceBookingViewModel;
 

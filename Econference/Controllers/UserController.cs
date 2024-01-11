@@ -12,10 +12,21 @@ namespace Econference.Controllers
     public class UserController : Controller
     {
         private IConferenceRepository _conferenceContext;
-        public UserController(IConferenceRepository conferenceContext)
+        private IHallRepository _hallContext;
+        private ICateringProviderRepository _caterContext;
+        private IBookingRepository _bookingContext;
+        public UserController(
+                IConferenceRepository conferenceContext, 
+                IHallRepository hallContext, 
+                ICateringProviderRepository caterContex,
+                IBookingRepository bookingContext)
         {
             _conferenceContext = conferenceContext;   
+            _hallContext = hallContext;
+            _caterContext = caterContex;
+            _bookingContext = bookingContext;
         }
+
 
         // GET: UserController
         public ActionResult Index()
@@ -187,14 +198,69 @@ namespace Econference.Controllers
         // POST: UserController/BookConferenceSpace
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult BookConferenceSpace(ConferenceBookingViewModel model)
+        public async Task<ActionResult> BookConferenceSpace(ConferenceBookingViewModel model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var conference = TempData["conference"] as Conference;
+                TempData.Keep("conference");
+
+                if (ModelState.IsValid)
+                {
+                    // Look through the rooms and check free one
+                    var rooms = await _hallContext.GetAllAsync();
+                    Hall hall = null;
+
+                    if (rooms != null)
+                    {
+                        hall = rooms.FirstOrDefault(e=>e.Status.Equals("Available"));
+                    }
+                    // If available - update the conference
+                    if (hall != null)
+                    {
+                        conference.HallId = hall.Id;
+                        conference.Status = "Confirmed";
+
+                        await _conferenceContext.UpdateAsync(conference);
+                        // update the halls status
+                        hall.Status = "Occupied";
+                        await _hallContext.UpdateAsync(hall);
+                    }
+
+                    Booking booking = new()
+                    {
+                        ConferenceId = model.ConferenceId,
+                        Status = "Approved",
+                        BookedAt = DateTime.Now,
+                    };
+
+                    // Look for available space
+                    if (model.IsCateringRequired.Equals("Yes"))
+                    {
+                        var caters = await _caterContext.GetAllAsync();
+                        if (caters != null)
+                        {
+                            Random rand = new();
+                            // Select a random index
+                            int index = rand.Next(caters.Count);
+
+                            // Get the string at the random index
+                            booking.CateringProviderId = caters[index].Id;
+                        }
+                    }
+                    
+                    // Persist the booking
+                    await _bookingContext.AddAsync(booking);
+
+                    return RedirectToAction(nameof(ListConference));
+                }
+                TempData.Keep("conference");
+
+                return View(conference);
             }
-            catch
+            catch(Exception e)
             {
+                Debug.WriteLine(e.Message);
                 return View();
             }
         }
