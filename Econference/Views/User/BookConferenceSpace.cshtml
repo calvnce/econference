@@ -2,7 +2,11 @@
     ViewData["Title"] = "Book Conference Space";
 }
 @{
-    var conference = TempData["conference"] as Conference;
+    Conference conference = null;
+    if (TempData["conference"] != null)
+    {
+        conference = JsonConvert.DeserializeObject<Conference>(TempData["conference"].ToString());
+    }
     TempData.Keep("conference");
 }
 @model Econference.ViewModels.ConferenceBookingViewModel;
@@ -19,18 +23,24 @@
                         <input type="text" class="form-control text-muted" value="@conference.Title">
                     </div>
                     <div class="mb-3">
-                        <label for="title" class="form-label">Conference Title</label>
-                        <input type="text" class="form-control text-muted" value="@conference.Title">
+                        <label for="desc" class="form-label">Description</label>
+                        <textarea class="form-control text-muted">@conference.Description </textarea>
                     </div>
                     <div class="mb-3">
                         <label for="desc" class="form-label">Requested Equipment</label>
-                        <textarea class="form-control text-muted">@Html.Raw(conference.Equipment.Replace("\n", "<br />")) </textarea>
+                        <textarea rows="5" class="form-control text-muted">@conference.Equipment </textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="userRole" class="form-label">Include Catering Services</label>
-                        <select asp-for="IsCateringRequired" class="form-select" aria-label="Select option">
-                            <option value="Yes">Yes</option>
+                    
+                    <div class="mb-3 col-md-6">
+                        <label for="participants" class="form-label">Participants</label>
+                        <input type="text" class="form-control text-muted" value="@conference.ParticipantCount">
+                    </div>
+
+                    <div class="mb-3 col-md-6">
+                        <label for="cateringOpt" class="form-label">Include Catering Services</label>
+                        <select asp-for="IsCateringRequired" class="form-select" aria-label="catering option">
                             <option value="No">No</option>
+                            <option value="Yes">Yes</option>
                         </select>
                         <span asp-validation-for="IsCateringRequired" class="text-danger"></span>
                     </div>
@@ -43,7 +53,7 @@
                             }
                         </ul>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Request</button>
                 </form>
             </div>
         </div>

@@ -15,7 +15,7 @@
 <section class="container-fluid">
     <h2>Your Conferences</h2>
     <hr />
-    <a asp-action="RegisterConference" asp-controller="User" asp-route-userId="@user.Id" class="btn btn-outline-success mb-1">Register Conference</a>
+    <a asp-action="RegisterConference" asp-controller="User" asp-route-userId="@user.Id" class="btn btn-outline-success mb-1">New</a>
     @if (Model != null && Model.Any())
     {
         <div class="row">

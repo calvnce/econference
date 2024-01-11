@@ -66,14 +66,14 @@ namespace Econference.Controllers
                         Description = model.Description,
                         Equipment = model.Equipment,
                         ParticipantCount = model.ParticipantCount,
-                        StartDate = DateOnly.ParseExact(model.StartDate, "yyyy-MM-dd"),
+                        StartDate = DateOnly.Parse(model.StartDate),
                         StartTime = TimeOnly.ParseExact(model.EndTime, "HH:mm"),
-                        EndDate = DateOnly.ParseExact(model.EndDate, "yyyy-MM-dd"),
+                        EndDate = DateOnly.Parse(model.EndDate),
                         EndTime = TimeOnly.ParseExact(model.EndTime,"HH:mm"),
                         Status = model.Status,
                         CreatedAt = DateTime.Now,
                     };
-                    await _conferenceContext.AddAsync(conference);
+                    await _conferenceContext.UpdateAsync(conference);
                     return RedirectToAction(nameof(ListConference));
                 }
                 return View(model);
@@ -117,17 +117,13 @@ namespace Econference.Controllers
             try
             {
                 await _conferenceContext.DeleteAsync(id);
+                return RedirectToAction(nameof(ListConference));
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
+                return RedirectToAction(nameof(ListConference));
             }
-
-            var conferences = await _conferenceContext.GetAllAsync();
-
-            var userConferences = conferences.Where(u => u.UserId.Equals(user.Id));
-
-            return View(userConferences);
         }
 
 
@@ -138,7 +134,21 @@ namespace Econference.Controllers
             try
             {
                 var conference = await _conferenceContext.GetAsync(id);
-                return View(conference);
+                var vModel = new ConferenceViewModel()
+                {
+                    Id = id,
+                    UserId = conference.UserId,
+                    Title = conference.Title,
+                    Description = conference.Description,
+                    Equipment = conference.Equipment,
+                    StartDate = conference.StartDate.ToString("yyyy-MM-dd"),
+                    EndDate = conference.EndDate.ToString("yyyy-MM-dd"),
+                    StartTime = conference.StartTime.ToString("HH:mm"),
+                    EndTime = conference.EndTime.ToString("HH:mm"),
+                    Status = conference.Status,
+                    ParticipantCount = conference.ParticipantCount,
+                };
+                return View(vModel);
             }
             catch (Exception e)
             {
@@ -147,8 +157,8 @@ namespace Econference.Controllers
             return RedirectToAction(nameof(ListConference));
         }
 
-        // POST: UserController/UpdateConference
-        [HttpPut]
+        // POST: UserController/UpdateConference/1
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateConference(int id, ConferenceViewModel model)
         {
@@ -163,9 +173,9 @@ namespace Econference.Controllers
                 conference.Description = model.Description;
                 conference.Equipment = model.Equipment;
                 conference.ParticipantCount = model.ParticipantCount;
-                conference.StartDate = DateOnly.ParseExact(model.StartDate, "yyyy-MM-dd");
-                conference.StartTime = TimeOnly.ParseExact(model.EndTime, "HH:mm");
-                conference.EndDate = DateOnly.ParseExact(model.EndDate, "yyyy-MM-dd");
+                conference.StartDate = DateOnly.Parse(model.StartDate);
+                conference.StartTime = TimeOnly.ParseExact(model.StartTime, "HH:mm");
+                conference.EndDate = DateOnly.Parse(model.EndDate);
                 conference.EndTime = TimeOnly.ParseExact(model.EndTime, "HH:mm");
                 conference.Status = model.Status;
 
@@ -174,7 +184,7 @@ namespace Econference.Controllers
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Debug.WriteLine($" Error: {e.Message}");
                 return RedirectToAction(nameof(ListConference));
             }
         }
@@ -185,8 +195,8 @@ namespace Econference.Controllers
             try
             {
                 var conference = await _conferenceContext.GetAsync(id);
-                TempData["conference"] = conference;
-                return View(conference);
+                TempData["conference"] = JsonConvert.SerializeObject(conference);
+                return View();
             }
             catch (Exception e)
             {
@@ -202,7 +212,11 @@ namespace Econference.Controllers
         {
             try
             {
-                var conference = TempData["conference"] as Conference;
+                Conference conference = null;
+                if (TempData["conference"] != null)
+                {
+                    conference = JsonConvert.DeserializeObject<Conference>(TempData["conference"].ToString());
+                }
                 TempData.Keep("conference");
 
                 if (ModelState.IsValid)

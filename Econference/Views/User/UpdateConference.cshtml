@@ -1,11 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Conference Registration";
-    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
-    ApplicationUser user = null;
-    if (userJson != null)
-    {
-        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
-    }
+    ViewData["Title"] = "Update Conference";
 }
 @model Econference.ViewModels.ConferenceViewModel;
 
@@ -13,52 +7,54 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-center p-2 text-secondary">Register Conference</h5>
-                <form asp-action="RegisterConference" method="post" class="form">
-                    <input asp-for="UserId" type="hidden" value="@user.Id" />
-                    <input type="hidden" asp-for="Status" value="Pending" />
+                <h5 class="card-title text-center p-2 text-secondary">Modify Conference Info</h5>
+                <form asp-action="UpdateConference" method="post" asp-route-id="@Model.Id" class="form">
+                    <input asp-for="UserId" type="hidden" value="@Model.UserId" />
+                    <input asp-for="Status" type="hidden" value="@Model.Status" />
                     <div class="mb-3">
                         <label for="title" class="form-label">Title</label>
-                        <input asp-for="Title" class="form-control">
+                        <input asp-for="Title" class="form-control" value="@Model.Title">
                         <span asp-validation-for="Title" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label for="desc" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control"> </textarea>
+                        <textarea asp-for="Description" class="form-control">@Model.Description</textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <div class="col-md-8">
                             <label for="startDate" class="form-label">Start Date</label>
-                            <input type="date" asp-for="StartDate" class="form-control">
+                            <input type="date" value="@Model.StartDate" asp-for="StartDate" class="form-control">
                             <span asp-validation-for="StartDate" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label for="startTime" class="form-label">Start Time</label>
-                            <input type="time" asp-for="StartTime" class="form-control">
+                            <input type="time" asp-for="StartTime" value="@Model.StartTime" class="form-control">
                             <span asp-validation-for="StartTime" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mb-3">
                         <div class="col-md-8">
                             <label for="endDate" class="form-label">End Date</label>
-                            <input type="date" asp-for="EndDate" class="form-control">
+                            <input type="date" value="@Model.EndDate" asp-for="EndDate" class="form-control">
                             <span asp-validation-for="EndDate" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label for="endTime" class="form-label">End Time</label>
-                            <input type="time" asp-for="EndTime" class="form-control">
+                            <input type="time" value="@Model.EndTime" asp-for="EndTime" class="form-control">
                             <span asp-validation-for="EndTime" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="participantCount" class="form-label">Number of Participants</label>
-                        <input type="number" asp-for="ParticipantCount" class="form-control">
+                        <input type="number" value="@Model.ParticipantCount" asp-for="ParticipantCount" class="form-control">
                         <span asp-validation-for="ParticipantCount" class="text-danger"></span>
                     </div>
                     <div class="mb-3">
                         <label for="equipmentId" class="form-label">Required Equipment/Resources</label>
-                        <textarea rows="4" asp-for="Equipment" class="form-control" aria-describedby="equipmentInfo"> </textarea>
+                        <textarea rows="4" asp-for="Equipment" class="form-control" aria-describedby="equipmentInfo">
+                            @Model.Equipment
+                        </textarea>
                         <span asp-validation-for="Equipment" class="text-danger"></span>
                         <div id="equipmentInfo" class="form-text">List all the required services and resources here(.e.g. Boards, Projectors).</div>
                     </div>
@@ -72,7 +68,7 @@
                             }
                         </ul>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
         </div>
