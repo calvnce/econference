@@ -67,7 +67,7 @@ namespace Econference.Controllers
                         Equipment = model.Equipment,
                         ParticipantCount = model.ParticipantCount,
                         StartDate = DateOnly.Parse(model.StartDate),
-                        StartTime = TimeOnly.ParseExact(model.EndTime, "HH:mm"),
+                        StartTime = TimeOnly.ParseExact(model.StartTime, "HH:mm"),
                         EndDate = DateOnly.Parse(model.EndDate),
                         EndTime = TimeOnly.ParseExact(model.EndTime,"HH:mm"),
                         Status = model.Status,
@@ -100,6 +100,7 @@ namespace Econference.Controllers
            
             var userConferences = conferences.Where(u => u.UserId.Equals(user.Id));
 
+
             return View(userConferences);
         }
 
@@ -116,7 +117,14 @@ namespace Econference.Controllers
 
             try
             {
+                var conference = await _conferenceContext.GetAsync(id);
+
+                var hall = conference.Hall;
+                hall.Status = "Available";
+                await _hallContext.UpdateAsync(hall);
+                
                 await _conferenceContext.DeleteAsync(id);
+                
                 return RedirectToAction(nameof(ListConference));
             }
             catch (Exception e)

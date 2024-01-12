@@ -21,28 +21,42 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">eConference</a>
+                @if (user.UserRole.Equals("USER"))
+                {
+                    <a class="navbar-brand" asp-area="" asp-controller="User" asp-action="Index">eConference</a>
+                }
+                else
+                {
+                    <a class="navbar-brand nav-text" asp-area="" asp-controller="Admin" asp-action="Index">eConference</a>
+                }
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Home</a>
+                        <li class="nav-item nav-text">
+                            @if (user.UserRole.Equals("USER"))
+                            {
+                                <a class="nav-link text-primary" asp-area="" asp-controller="User" asp-action="Index">Home</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link text-primary" asp-area="" asp-controller="Admin" asp-action="Index">Home</a>
+                            }
                         </li>
-                       @if (user.UserRole.Equals("USER"))
+                        @if (user.UserRole.Equals("USER"))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <li class="nav-item dropdown nav-text">
+                                <a class="nav-link dropdown-toggle text-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Conference
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-route-userId="@user.Id" asp-action="RegisterConference">
-                                            Register Confrence
+                                            Register Conference
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -57,22 +71,19 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListConferenceBooking">Home</a>
+                                <a class="nav-link text-primary" asp-area="" asp-controller="Admin" asp-action="ListConferenceHall">Halls</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListConferenceHall">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ListCateringProvider">Home</a>
+                                <a class="nav-link text-primary" asp-area="" asp-controller="Admin" asp-action="ListCateringProvider">Catering Providers</a>
                             </li>
                         }
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <li class="nav-item dropdown nav-text">
+                            <a class="nav-link dropdown-toggle text-primary" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @user.FullName
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="User" asp-action="Index">
+                                    <a class="dropdown-item" aria-current="page" asp-area="user-area" asp-controller="Account" asp-action="Logout">
                                         Logout
                                     </a>
                                 </li>
@@ -87,8 +98,8 @@
         @RenderBody()
     </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted nav-bg-color">
+        <div class="container nav-text">
             &copy; 2024 - Econference
         </div>
     </footer>

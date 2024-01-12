@@ -47,7 +47,8 @@ namespace Econference.Data
         {
             try
             {
-                return await _context.Bookings.ToListAsync();
+                return await _context.Bookings.Include(e=>e.Cater)
+                                        .ToListAsync();
             }
             catch (Exception e)
             {
@@ -60,7 +61,8 @@ namespace Econference.Data
         {
             try
             {
-                return await _context.Bookings.FindAsync(id);
+                return await _context.Bookings.Include(e => e.Cater)
+                                    .FirstOrDefaultAsync(i=>i.Id == id);
             }
             catch (Exception e)
             {

@@ -50,17 +50,12 @@ namespace Econference.Controllers
                             await _signInManager.SignInAsync(user, isPersistent: false);
 
                             // Redirect to a secure page after successful registration
-                            var usr = new ApplicationUser
-                            {
-                                Id = user.Id,
-                                UserName = user.UserName,
-                                FullName = user.FullName,
-                                Email = user.Email
-                            };
+                            var authUser = await _signInManager.UserManager.FindByNameAsync(user.UserName);
 
-                            var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
+                            var userJson = JsonConvert.SerializeObject(authUser, Formatting.Indented);
+
                             HttpContext.Session.SetString("user", userJson);
-                            if (user.UserRole.Equals("USER"))
+                            if (authUser.UserRole.Equals("USER"))
                             {
                                 return RedirectToAction("Index", "User");
                             }
@@ -90,6 +85,22 @@ namespace Econference.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Logout()
+        {
+            var userJson = HttpContext.Session.GetString("user");
+            if (userJson != null)
+            {
+                var user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+                if (user != null)
+                {
+                    await _signInManager.SignOutAsync();
+                }
+            }
+            HttpContext.Session.Remove("user");
+
+            return RedirectToAction(nameof(LogIn));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogIn(LogInViewModel model)
@@ -104,17 +115,10 @@ namespace Econference.Controllers
                         var user = await _signInManager.UserManager.FindByNameAsync(model.Username);
                         if (user != null)
                         {
-                            // Pass the necessary data to the view
-                            var usr = new ApplicationUser {
-                                Id = user.Id, 
-                                UserName=user.UserName,
-                                FullName=user.FullName,
-                                Email=user.Email
-                            };
-
-                            var userJson = JsonConvert.SerializeObject(usr, Formatting.Indented);
+                            var userJson = JsonConvert.SerializeObject(user, Formatting.Indented);
                             HttpContext.Session.SetString("user", userJson);
 
+                            Debug.WriteLine(user.UserRole);
                             if (user.UserRole.Equals("USER"))
                             {
                                 return RedirectToAction("Index", "User");

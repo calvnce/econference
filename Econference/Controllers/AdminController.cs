@@ -10,9 +10,11 @@ namespace Econference.Controllers
     public class AdminController : Controller
     {
         private readonly IHallRepository _hallContext;
-        public AdminController(IHallRepository hallContext) 
+        private readonly ICateringProviderRepository _cateringContext;
+        public AdminController(IHallRepository hallContext, ICateringProviderRepository cateringContext) 
         {
             _hallContext = hallContext;
+            _cateringContext = cateringContext;
         }
 
         // GET: AdminController
@@ -48,6 +50,9 @@ namespace Econference.Controllers
         }
 
         // GET: AdminController/Create
+        // Post: AdminController/AddConferenceHall
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddConferenceHall(HallViewModel model)
         {
             try
@@ -75,6 +80,63 @@ namespace Econference.Controllers
                 return View(model);
             }
         }
+
+        // GET: AdminController/ListConferenceHall
+        public async Task<ActionResult> ListCateringProvider()
+        {
+            try
+            {
+                var caters = await _cateringContext.GetAllAsync();
+                return View(caters);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return View();
+            }
+        }
+        // GET: AdminController/AddCateringProvider
+        public ActionResult AddCateringProvider()
+        {
+            return View();
+        }
+
+        // Post: AdminController/AddCateringProvider
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddCateringProvider(CateringProviderViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var cater = new CateringProvider()
+                    {
+                        ProviderName = model.ProviderName,
+                        Menu = model.Menu,
+                        CreatedAt = DateTime.Now,
+                    };
+                    await _cateringContext.AddAsync(cater);
+                    return RedirectToAction(nameof(ListCateringProvider));
+                }
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError(String.Empty, e.Message);
+                Debug.WriteLine(e.Message);
+                return View(model);
+            }
+        }
+
+
+
+
+
+
+
+
+
 
         // POST: AdminController/Create
         [HttpPost]

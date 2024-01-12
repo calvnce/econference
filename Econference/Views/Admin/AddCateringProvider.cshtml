@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Add Catering Provider";
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
+}
+@model Econference.ViewModels.CateringProviderViewModel;
+
+<section class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center p-2 text-secondary">Add New Catering Provider</h5>
+                <form asp-action="AddCateringProvider" method="post" class="form">
+                    <div class="mb-3">
+                        <label for="providerName" class="form-label">Name</label>
+                        <input asp-for="ProviderName" class="form-control">
+                        <span asp-validation-for="ProviderName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="desc" class="form-label">Menu</label>
+                        <textarea rows="7" asp-for="Menu" class="form-control"></textarea>
+                        <span asp-validation-for="Menu" class="text-danger"></span>
+                    </div>
+
+                    <!-- Display model-level errors -->
+                    <div class="validation-summary-errors text-danger">
+                        <ul>
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

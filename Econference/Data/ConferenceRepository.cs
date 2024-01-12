@@ -47,7 +47,11 @@ namespace Econference.Data
         {
             try
             {
-                return await _context.Conferences.ToListAsync();
+                return await _context.Conferences
+                                   .Include(c => c.Hall)
+                                   .Include(c => c.Bookings)
+                                        .ThenInclude(b => b.Cater)
+                                   .ToListAsync();
             }
             catch (Exception e)
             {
@@ -60,7 +64,11 @@ namespace Econference.Data
         {
             try
             {
-                return await (_context.Conferences.FindAsync(id));
+                return await _context.Conferences
+                                  .Include(c => c.Hall)
+                                  .Include(c => c.Bookings)
+                                    .ThenInclude(b => b.Cater)
+                                  .FirstOrDefaultAsync(c => c.Id == id);
             }
             catch (Exception e)
             {

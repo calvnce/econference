@@ -23,19 +23,45 @@
                     <div class="card card-deck mb-4">
                         <div class="card-body">
                             <h5 class="card-title">@conference.Title</h5>
+                            <small class="text-muted">
+                                @conference.Description
+                            </small>
                             <hr/>
                             <h6 class="card-subtitle mb-2 text-muted">@conference.StartDate . @conference.StartTime  - @conference.EndDate . @conference.EndTime</h6>
                             <p class="card-text">
                                 <small class="text-muted">
                                     Participants: @conference.ParticipantCount
-                                </small></p>
-                            <p class="card-text">@conference.Description</p>
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Status: @conference.Status
+                                </small>
+                            </p>
+                            <hr />
+                            <p class="card-subtitle mb-2 text-muted">Catering Services</p>
+                            @if (@conference.Bookings.Count==0 || @conference.Bookings.FirstOrDefault().Cater == null)
+                            {
+                                <p class="card-text">No catering services</p>
+                            }else
+                            {
+                                <p>
+                                    <small class="text-muted">
+                                        Service Provider: @conference.Bookings.FirstOrDefault().Cater.ProviderName
+                                    </small>
+                                </p>
+                                <p class="card-subtitle mb-2 text-muted">MENU</p>
+                                <p class="card-text">
+                                    @Html.Raw(conference.Bookings.FirstOrDefault().Cater.Menu.Replace("\n", "<br />"))
+                                </p>
+                            }
                             <hr />
                             <p class="card-subtitle mb-2 text-muted">Equipment</p>
                             <p class="card-text">
                                 <small class="text-muted">
                                     @Html.Raw(conference.Equipment.Replace("\n", "<br />"))
-                                </small></p>
+                                </small>
+                            </p>
                             <hr />
 
                             <h6 class="card-subtitle mb-2 text-muted">Location</h6>

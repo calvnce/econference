@@ -1,5 +1,54 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Conference Halls";
+
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
 }
+
+@model IEnumerable<Econference.Models.CateringProvider>
+
+
+<section class="container-fluid">
+    <div class="row col-md-1">
+        <a asp-action="AddCateringProvider" asp-controller="Admin" class="btn btn-outline-success mb-1">Add</a>
+    </div>
+    @if (Model != null && Model.Any())
+    {
+        <div class="row col-md-6">
+            <table class="table table-hover table-striped">
+                <tbody>
+                    <tr>
+                        <th>#Id</th>
+                        <th>Name</th>
+                        <th>Menu</th>
+                    </tr>
+                </tbody>
+                <tbody>
+                    @foreach (var menu in Model)
+                    {
+                        <tr>
+                            <td>@menu.Id</td>
+                            <td>@menu.ProviderName</td>
+                            <td>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        @Html.Raw(menu.Menu.Replace("\n", "<br />"))
+                                    </small>
+                                </p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>No Halls found.</p>
+    }
+
+</section>
