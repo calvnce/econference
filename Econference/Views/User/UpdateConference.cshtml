@@ -1,5 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Update Conference";
+    var userJson = HttpContextAccessor.HttpContext.Session.GetString("user");
+    ApplicationUser user = null;
+    if (userJson != null)
+    {
+        user = JsonConvert.DeserializeObject<ApplicationUser>(userJson);
+    }
 }
 @model Econference.ViewModels.ConferenceViewModel;
 
